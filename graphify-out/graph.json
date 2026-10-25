@@ -1950,7 +1950,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/components/Site.tsx",
-      "source_location": "L336",
+      "source_location": "L337",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_site_site",
@@ -2400,5 +2400,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "1d4e8ded73832295601fa6dc280f435d482f10a8"
+  "built_at_commit": "ef284890a7f55e42bcbf2b9653e103e91d9092b7"
 }

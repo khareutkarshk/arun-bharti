@@ -31,7 +31,7 @@ export type Copy = {
   };
   parliament: { first: string; last: string; items: { name: string; note: string }[]; caption: string; alt: string };
   contact: { h: string; email: string; places: string; social: string };
-  close: { h: [string, string]; cta: string; rights: string };
+  close: { h: [string, string]; cta: string; rights: string; party: string; partyRole: string; logoAlt: string };
 };
 
 const cities = {
@@ -171,6 +171,9 @@ export const copy: Record<Lang, Copy> = {
       h: ["Bihar first.", "Bihari first."],
       cta: "Submit a grievance",
       rights: "© 2026 Arun Bharti",
+      party: "Lok Janshakti Party (Ram Vilas)",
+      partyRole: "Chief Whip in the Lok Sabha",
+      logoAlt: "LJP(RV) logo: a helicopter in the party colours",
     },
   },
   hi: {
@@ -288,6 +291,9 @@ export const copy: Record<Lang, Copy> = {
       h: ["बिहार फ़र्स्ट,", "बिहारी फ़र्स्ट।"],
       cta: "शिकायत दर्ज करें",
       rights: "© 2026 अरुण भारती",
+      party: "लोक जनशक्ति पार्टी (रामविलास)",
+      partyRole: "लोकसभा में मुख्य सचेतक",
+      logoAlt: "लोजपा (रा) का चिह्न: पार्टी के रंगों में हेलीकॉप्टर",
     },
   },
 };

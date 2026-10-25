@@ -96,6 +96,7 @@ export default function Site() {
     <div ref={root}>
       <nav className={`nav${stuck ? " is-stuck" : ""}${hidden && !menu ? " is-hidden" : ""}${menu ? " is-open" : ""}`} aria-label="Main">
         <a className="nav__mark" href="#top" onClick={() => setMenu(false)}>
+          <img className="nav__logo" src="/img/ljp-rv-logo.webp" alt="" width={301} height={301} />
           {lang === "en" ? "Arun Bharti" : "अरुण भारती"}
           <span className="nav__role">{t.nav.role}</span>
         </a>
@@ -372,6 +373,13 @@ export default function Site() {
           </ul>
         </div>
         <div className="close__legal">
+          <p className="party">
+            <img src="/img/ljp-rv-logo.webp" alt={t.close.logoAlt} width={301} height={301} loading="lazy" />
+            <span>
+              <strong>{t.close.party}</strong>
+              {t.close.partyRole}
+            </span>
+          </p>
           <span>{t.close.rights}</span>
         </div>
         <p className="close__mark" aria-hidden="true">

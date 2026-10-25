@@ -1950,7 +1950,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/components/Site.tsx",
-      "source_location": "L325",
+      "source_location": "L336",
       "weight": 1.0,
       "_origin": "ast",
       "source": "src_components_site_site",

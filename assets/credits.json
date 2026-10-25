@@ -116,5 +116,23 @@
    "Share-alike: an altered version (recoloured, combined with other pictures) must be shared under the same licence."
   ],
   "saved": "2026-10-25T14:47:38.062Z"
+ },
+ {
+  "file": "assets/ljp-rv-logo.jpg",
+  "media": "image",
+  "ref": "enwiki:File:LJP_R_Logo.jpg",
+  "title": "Lok Janshakti Party (Ram Vilas) logo",
+  "creator": "Lok Janshakti Party (Ram Vilas)",
+  "license": "Party trademark (non-free on Wikipedia)",
+  "creditRequired": false,
+  "page": "https://en.wikipedia.org/wiki/File:LJP_R_Logo.jpg",
+  "image": "https://upload.wikimedia.org/wikipedia/en/b/ba/LJP_R_Logo.jpg",
+  "width": 316,
+  "height": 316,
+  "notes": [
+   "The party's own mark, used on an MP's site with the party's consent. Ask the client for the official vector file; this copy is 316px.",
+   "public/img/ljp-rv-logo.webp is this file cropped to the roundel with a transparent background."
+  ],
+  "saved": "2026-10-25T21:41:00.000Z"
  }
 ]
