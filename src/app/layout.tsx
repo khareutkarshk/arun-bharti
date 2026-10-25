@@ -26,7 +26,7 @@ export const viewport: Viewport = { themeColor: "#F5F3EE" };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${latin.variable} ${deva.variable}`}>
+    <html lang="en" className={`${latin.variable} ${deva.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
       </head>

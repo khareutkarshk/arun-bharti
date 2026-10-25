@@ -79,30 +79,71 @@ export function useMotion(root: RefObject<HTMLElement | null>, lang: Lang, setSt
 
       if (reduced) return;
 
-      // the frame in the name opens into the red field of the next section
-      const hero = el.querySelector<HTMLElement>(".hero")!;
+      // one held scene: the frame in the name opens into the red field, and the same portrait
+      // walks from the middle of the screen to its place beside the statement
+      const opening = el.querySelector<HTMLElement>(".opening")!;
+      const hero = opening.querySelector<HTMLElement>(".hero")!;
       const slot = hero.querySelector<HTMLElement>(".hero__slot")!;
       const frame = hero.querySelector<HTMLElement>(".hero__frame")!;
       const img = frame.querySelector("img")!;
+      opening.classList.add("is-pinned");
+
+      // positions are worked out in the frame's own (unscaled) space, since the portrait lives inside it
       const geo = () => {
         const h = hero.getBoundingClientRect();
         const r = slot.getBoundingClientRect();
+        const vw = h.width;
+        const vh = h.height;
         const w = frame.offsetWidth;
         const fh = frame.offsetHeight;
         const cx = r.left - h.left + r.width / 2;
         const cy = r.top - h.top + r.height - fh / 2;
-        return { x: h.width / 2 - cx, y: h.height / 2 - cy, s: Math.max(h.width / w, h.height / fh) * 1.04 };
+        const S = Math.max(vw / w, vh / fh) * 1.04;
+        const iw = img.offsetWidth;
+        const ratio = img.naturalHeight / img.naturalWidth || 1992 / 1400;
+        const place = (left: number, top: number, width: number) => ({
+          x: (left - vw / 2) / S + w / 2 - img.offsetLeft,
+          y: (top - vh / 2) / S + fh / 2 - img.offsetTop,
+          scale: width / S / iw,
+        });
+        const phone = vw < 720;
+        const aw = Math.min(iw * 2.4, vw * 0.9);
+        const bh = phone ? vh * 0.48 : vh * 0.94;
+        const bw = bh / ratio;
+        return {
+          frame: { x: vw / 2 - cx, y: vh / 2 - cy, scale: S },
+          centre: place(vw / 2 - aw / 2, vh - aw * ratio * 0.97, aw),
+          aside: place(phone ? vw / 2 - bw / 2 : vw - bw * 0.97, vh - bh * 0.96, bw),
+        };
       };
+      let g = geo();
+      const lines = opening.querySelectorAll(".statement-s [data-line]");
+      const words = opening.querySelectorAll(".statement-s blockquote > *");
+
       gsap
         .timeline({
-          scrollTrigger: { trigger: hero, start: "top top", end: "+=90%", pin: true, scrub: 0.6, invalidateOnRefresh: true },
+          scrollTrigger: {
+            trigger: opening,
+            start: "top top",
+            end: "+=170%",
+            pin: true,
+            scrub: 0.6,
+            invalidateOnRefresh: true,
+            onRefreshInit: () => {
+              g = geo();
+            },
+          },
         })
-        .to(frame, { x: () => geo().x, y: () => geo().y, scale: () => geo().s, ease: "power2.inOut", duration: 0.8 }, 0)
-        .to(img, { scale: () => 2.4 / geo().s, yPercent: 4, ease: "power2.inOut", duration: 0.8 }, 0)
-        .to("[data-word='first']", { xPercent: -140, autoAlpha: 0, ease: "power2.in", duration: 0.55 }, 0)
-        .to("[data-word='last']", { xPercent: 140, autoAlpha: 0, ease: "power2.in", duration: 0.55 }, 0)
-        .to([".hero__foot", ".nav"], { autoAlpha: 0, y: -16, ease: "none", duration: 0.15 }, 0)
-        .to({}, { duration: 0.2 });
+        .to(frame, { x: () => g.frame.x, y: () => g.frame.y, scale: () => g.frame.scale, ease: "power2.inOut", duration: 0.5 }, 0)
+        .to(img, { x: () => g.centre.x, y: () => g.centre.y, scale: () => g.centre.scale, ease: "power2.inOut", duration: 0.5 }, 0)
+        .to("[data-word='first']", { xPercent: -140, autoAlpha: 0, ease: "power2.in", duration: 0.35 }, 0)
+        .to("[data-word='last']", { xPercent: 140, autoAlpha: 0, ease: "power2.in", duration: 0.35 }, 0)
+        .to([".hero__foot", ".nav"], { autoAlpha: 0, y: -16, ease: "none", duration: 0.1 }, 0)
+        .to(img, { x: () => g.aside.x, y: () => g.aside.y, scale: () => g.aside.scale, ease: "power2.inOut", duration: 0.4 }, 0.58)
+        .fromTo(".opening .statement-s", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.01, immediateRender: true }, 0.64)
+        .fromTo(lines, { y: 0, yPercent: 105 }, { y: 0, yPercent: 0, ease: "expo.out", duration: 0.3, stagger: 0.06 }, 0.68)
+        .fromTo(words, { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, ease: "power3.out", duration: 0.25, stagger: 0.05 }, 0.76)
+        .to({}, { duration: 0.15 });
 
       // pictures drift a few percent inside their frames
       gsap.utils.toArray<HTMLElement>("[data-drift]").forEach((d) => {
@@ -116,6 +157,7 @@ export function useMotion(root: RefObject<HTMLElement | null>, lang: Lang, setSt
 
     return () => {
       ctx.revert();
+      el.querySelector(".opening")?.classList.remove("is-pinned");
       gsap.ticker.remove(tick);
       lenis?.destroy();
     };

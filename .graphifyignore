@@ -1,0 +1,7 @@
+# photographs: no code relationships, would cost one vision pass each
+public/img/
+assets/*.jpg
+# scaffold leftovers, build output
+pnpm-workspace.yaml
+pnpm-lock.yaml
+graphify-out/

@@ -144,10 +144,7 @@ a { color: inherit; }
   background: var(--accent); overflow: hidden; transform-origin: center;
   will-change: transform;
 }
-.hero__frame img {
-  position: absolute; left: 50%; top: 4%; width: 70%; height: auto;
-  transform: translateX(-50%); transform-origin: 50% 20%;
-}
+.hero__frame img { position: absolute; left: 15%; top: 4%; width: 70%; height: auto; transform-origin: 0 0; }
 .hero__foot { display: flex; flex-direction: column; align-items: center; gap: 28px; margin-top: clamp(32px, 5vh, 48px); text-align: center; }
 .hero__sub { margin: 0; font-size: 20px; line-height: 1.4; max-width: 44ch; }
 
@@ -155,7 +152,7 @@ a { color: inherit; }
   .hero { min-height: 640px; }
   .hero__name { flex-direction: column; align-items: center; gap: 0.06em; font-size: 21vw; line-height: 0.9; }
   .hero__frame { width: calc(100vw - 2 * var(--m)); height: auto; aspect-ratio: 3 / 2; font-size: 16px; }
-  .hero__frame img { width: 62%; top: 6%; }
+  .hero__frame img { width: 62%; left: 19%; top: 6%; }
   .hero__stage { justify-content: flex-start; padding: 104px var(--m) 0; }
   .hero__foot { align-items: stretch; gap: 20px; }
   .hero__sub { font-size: 18px; }
@@ -426,3 +423,10 @@ a { color: inherit; }
   .block__cluster > * { grid-column: 1; }
   .block__cluster > .block__body { grid-column: 2; grid-row: 1 / span 2; margin-top: 0; }
 }
+
+/* hero and statement as one held scene: the portrait travels from the name to the statement */
+.opening.is-pinned { position: relative; height: 100svh; overflow: clip; }
+.opening.is-pinned .statement-s { position: absolute; inset: 0; z-index: 3; background: transparent; pointer-events: none; }
+.opening.is-pinned .statement-s__fig { display: none; }
+.opening.is-pinned .statement-s__inner { min-height: 100svh; }
+@media (max-width: 720px) { .opening.is-pinned .statement-s__inner { padding-top: 72px; } }

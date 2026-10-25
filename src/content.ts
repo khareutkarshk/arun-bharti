@@ -30,7 +30,7 @@ export type Copy = {
   };
   parliament: { first: string; last: string; stages: string[]; alt: string };
   contact: { h: string; email: string; places: string; social: string };
-  close: { h: [string, string]; cta: string; credits: string; rights: string };
+  close: { h: [string, string]; cta: string; rights: string };
 };
 
 const cities = {
@@ -160,7 +160,6 @@ export const copy: Record<Lang, Copy> = {
     close: {
       h: ["Bihar first.", "Bihari first."],
       cta: "Submit a grievance",
-      credits: "Photographs of Bihar and Delhi",
       rights: "© 2026 Arun Bharti",
     },
   },
@@ -269,7 +268,6 @@ export const copy: Record<Lang, Copy> = {
     close: {
       h: ["बिहार फ़र्स्ट,", "बिहारी फ़र्स्ट।"],
       cta: "शिकायत दर्ज करें",
-      credits: "बिहार और दिल्ली की तस्वीरें",
       rights: "© 2026 अरुण भारती",
     },
   },

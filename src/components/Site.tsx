@@ -49,6 +49,8 @@ export default function Site() {
 
   return (
     <div ref={root}>
+      <main>
+      <div className="opening">
       <header className="hero" id="top">
         <nav className="nav" aria-label="Main">
           <a className="nav__mark" href="#top">
@@ -101,7 +103,6 @@ export default function Site() {
         </div>
       </header>
 
-      <main>
         <section className="statement-s">
           <div className="grid wrap statement-s__inner">
             <Lines text={t.statement.h} className="title statement-s__h" />
@@ -121,6 +122,7 @@ export default function Site() {
             <img src="/img/ab-3105.webp" alt={t.statement.portraitAlt} width={1400} height={1991} loading="lazy" />
           </figure>
         </section>
+      </div>
 
         <section className="record wrap" id="record">
           <div className="grid">
@@ -297,13 +299,6 @@ export default function Site() {
         </div>
         <div className="close__legal">
           <span>{t.close.rights}</span>
-          <p>
-            {t.close.credits}:{" "}
-            <a className="link" href="https://commons.wikimedia.org/wiki/File:Sansad_Bhavan,_Delhi,_BNK.jpg">“Sansad Bhavan, Delhi, BNK”</a> by Nikhilb239;{" "}
-            <a className="link" href="https://commons.wikimedia.org/wiki/File:Jhajha_railway_station_in_the_Jamui_district,_Bihar._02.jpg">“Jhajha railway station”</a> by Pinakpani;{" "}
-            <a className="link" href="https://commons.wikimedia.org/wiki/File:Paddy_field_Siwan_71.jpg">“Paddy field Siwan 71”</a> by Dr Umesh Prasad; all{" "}
-            <a className="link" href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>, via Wikimedia Commons.
-          </p>
         </div>
         <p className="close__mark" aria-hidden="true">
           {lang === "en" ? "Arun Bharti" : "अरुण भारती"}
