@@ -4,7 +4,7 @@ type Row = { whole: string; part: string; caption: string };
 type City = { id: string; name: string; venue: string; date: string };
 
 export type Copy = {
-  nav: { links: { href: string; label: string }[]; toggle: string; toggleLabel: string };
+  nav: { links: { href: string; label: string }[]; toggle: string; toggleLabel: string; role: string; cta: string; menu: string; close: string };
   hero: { first: string; last: string; sub: string; cta: string; portraitAlt: string };
   statement: { h: [string, string]; quote: string; quoteRest: string; cite: string; portraitAlt: string };
   record: { h: [string, string]; rows: Row[] };
@@ -20,6 +20,7 @@ export type Copy = {
   alliances: {
     h: [string, string];
     blocks: {
+      tag: string;
       title: [string, string];
       body: string;
       alt: string;
@@ -28,7 +29,7 @@ export type Copy = {
       picture?: { src: string; alt: string; caption: string };
     }[];
   };
-  parliament: { first: string; last: string; stages: string[]; alt: string };
+  parliament: { first: string; last: string; items: { name: string; note: string }[]; caption: string; alt: string };
   contact: { h: string; email: string; places: string; social: string };
   close: { h: [string, string]; cta: string; rights: string };
 };
@@ -66,6 +67,10 @@ export const copy: Record<Lang, Copy> = {
       ],
       toggle: "हिंदी",
       toggleLabel: "हिंदी में पढ़ें",
+      role: "MP, Jamui",
+      cta: "Write to us",
+      menu: "Menu",
+      close: "Close",
     },
     hero: {
       first: "Arun",
@@ -115,6 +120,7 @@ export const copy: Record<Lang, Copy> = {
       h: ["Alliances,", "built to win."],
       blocks: [
         {
+          tag: "Jharkhand 2024",
           title: ["Jharkhand,", "in sixty days."],
           body:
             "Built the NDA alliance in Jharkhand from scratch in sixty days. Chose Chatra, fielded the candidate and carried it after the longest roadshow in the party’s history, on 11 November 2024.",
@@ -122,6 +128,7 @@ export const copy: Record<Lang, Copy> = {
           figure: { value: "18,401", caption: "votes: the winning margin in Chatra" },
         },
         {
+          tag: "Bihar 2025",
           title: ["Twenty-nine seats,", "nineteen won."],
           body:
             "Appointed Bihar election incharge on day one. Negotiated 29 seats with the BJP, finalised every candidate and won 19 of them, mostly in tough seats.",
@@ -129,6 +136,7 @@ export const copy: Record<Lang, Copy> = {
           seats: { caption: "Each square is a seat LJP(RV) contested in Bihar 2025" },
         },
         {
+          tag: "Jamui",
           title: ["Jamui,", "on the record."],
           body:
             "Roads, irrigation, water, rail, schools and health, tracked through DISHA reviews and the MPLAD fund. Every project logged by block and village, so any voter can see what has been done.",
@@ -144,11 +152,13 @@ export const copy: Record<Lang, Copy> = {
     parliament: {
       first: "Three committees.",
       last: "One whip.",
-      stages: [
-        "Standing Committee on Finance: financial legislation and regulatory design.",
-        "Committee on the Welfare of Scheduled Castes and Scheduled Tribes.",
-        "Consultative Committee on Skill Development and Entrepreneurship. And Chief Whip of LJP(RV) in the Lok Sabha.",
+      items: [
+        { name: "Standing Committee on Finance", note: "Financial legislation and regulatory design." },
+        { name: "Committee on the Welfare of Scheduled Castes and Scheduled Tribes", note: "Safeguards and schemes for SC and ST communities." },
+        { name: "Consultative Committee on Skill Development and Entrepreneurship", note: "Attached to the Ministry of Skill Development." },
+        { name: "Chief Whip, LJP(RV)", note: "Holds the party line in the Lok Sabha." },
       ],
+      caption: "Sansad Bhavan, New Delhi",
       alt: "Sansad Bhavan, the Parliament House in New Delhi",
     },
     contact: {
@@ -174,6 +184,10 @@ export const copy: Record<Lang, Copy> = {
       ],
       toggle: "English",
       toggleLabel: "Read in English",
+      role: "सांसद, जमुई",
+      cta: "हमें लिखें",
+      menu: "मेनू",
+      close: "बंद करें",
     },
     hero: {
       first: "अरुण",
@@ -223,6 +237,7 @@ export const copy: Record<Lang, Copy> = {
       h: ["गठबंधन,", "जीत के लिए।"],
       blocks: [
         {
+          tag: "झारखंड 2024",
           title: ["झारखंड,", "साठ दिनों में।"],
           body:
             "झारखंड में एनडीए गठबंधन साठ दिनों में शून्य से खड़ा किया। चतरा सीट चुनी, उम्मीदवार उतारा और 11 नवंबर 2024 को पार्टी इतिहास के सबसे लंबे रोड शो के बाद उसे जीता।",
@@ -230,6 +245,7 @@ export const copy: Record<Lang, Copy> = {
           figure: { value: "18,401", caption: "वोट: चतरा में जीत का अंतर" },
         },
         {
+          tag: "बिहार 2025",
           title: ["उनतीस सीटें,", "उन्नीस जीत।"],
           body:
             "पहले ही दिन बिहार चुनाव प्रभारी नियुक्त। भाजपा के साथ 29 सीटों पर समझौता, हर उम्मीदवार तय, और 19 सीटों पर जीत, ज़्यादातर कठिन सीटों पर।",
@@ -237,6 +253,7 @@ export const copy: Record<Lang, Copy> = {
           seats: { caption: "हर खाना बिहार 2025 में लोजपा (रा) की लड़ी एक सीट है" },
         },
         {
+          tag: "जमुई",
           title: ["जमुई,", "रिकॉर्ड पर।"],
           body:
             "सड़क, सिंचाई, पानी, रेल, स्कूल और स्वास्थ्य: दिशा समीक्षा और एमपीलैड निधि के ज़रिए निगरानी। हर परियोजना प्रखंड और गाँव के हिसाब से दर्ज, ताकि हर मतदाता देख सके कि क्या हुआ है।",
@@ -252,11 +269,13 @@ export const copy: Record<Lang, Copy> = {
     parliament: {
       first: "तीन समितियाँ।",
       last: "एक सचेतक।",
-      stages: [
-        "वित्त पर स्थायी समिति: वित्तीय विधान और नियामक ढाँचा।",
-        "अनुसूचित जाति और अनुसूचित जनजाति कल्याण समिति।",
-        "कौशल विकास और उद्यमिता पर परामर्शदात्री समिति। और लोकसभा में लोजपा (रा) के मुख्य सचेतक।",
+      items: [
+        { name: "वित्त पर स्थायी समिति", note: "वित्तीय विधान और नियामक ढाँचा।" },
+        { name: "अनुसूचित जाति और अनुसूचित जनजाति कल्याण समिति", note: "अनुसूचित जातियों और जनजातियों के संरक्षण और योजनाएँ।" },
+        { name: "कौशल विकास और उद्यमिता पर परामर्शदात्री समिति", note: "कौशल विकास और उद्यमिता मंत्रालय से संबद्ध।" },
+        { name: "मुख्य सचेतक, लोजपा (रा)", note: "लोकसभा में पार्टी की लाइन तय रखते हैं।" },
       ],
+      caption: "संसद भवन, नई दिल्ली",
       alt: "नई दिल्ली में संसद भवन",
     },
     contact: {

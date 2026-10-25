@@ -40,19 +40,19 @@
     "semantic_hash": "936e27a5795b9edc32ea057efb16a6d9"
   },
   "src/components/Site.tsx": {
-    "mtime": 1792942006.9778683,
-    "ast_hash": "ab6d295d682a1364c10174940d88633b",
-    "semantic_hash": "ab6d295d682a1364c10174940d88633b"
+    "mtime": 1792944515.2854972,
+    "ast_hash": "320a265c2fa1671516a43e1e95036085",
+    "semantic_hash": ""
   },
   "src/components/useMotion.ts": {
-    "mtime": 1792942314.5708685,
-    "ast_hash": "4fb6555abaaf15280103955fe249d2bf",
-    "semantic_hash": "4fb6555abaaf15280103955fe249d2bf"
+    "mtime": 1792943759.24641,
+    "ast_hash": "1165cd038d61db51c221117de1fdfa2a",
+    "semantic_hash": ""
   },
   "src/content.ts": {
-    "mtime": 1792942027.7608047,
-    "ast_hash": "75aa4a243cd547c0c0aa6399585085c5",
-    "semantic_hash": "75aa4a243cd547c0c0aa6399585085c5"
+    "mtime": 1792943759.24641,
+    "ast_hash": "100c4853f9ec2ff49e4bb684e6c2e270",
+    "semantic_hash": ""
   },
   "src/data/bihar.json": {
     "mtime": 1792939755.4723208,
@@ -68,5 +68,15 @@
     "mtime": 1792941620.0728397,
     "ast_hash": "ec39b8516b4d5c41eb341963808f1320",
     "semantic_hash": "ec39b8516b4d5c41eb341963808f1320"
+  },
+  ".claude/settings.json": {
+    "mtime": 1792942531.9228954,
+    "ast_hash": "8ba8d82bb3d51047ac42a6d55aace617",
+    "semantic_hash": ""
+  },
+  "CLAUDE.md": {
+    "mtime": 1792942531.9218955,
+    "ast_hash": "82efb97a359f5c7290bf2513d14686be",
+    "semantic_hash": ""
   }
 }

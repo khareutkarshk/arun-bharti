@@ -47,37 +47,103 @@ export default function Site() {
 
   useMotion(root, lang, setStage);
 
+  // the bar settles once the page moves, steps aside while reading down and returns on the way up;
+  // the link for the part on screen is marked
+  const [stuck, setStuck] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const [active, setActive] = useState("");
+  const [menu, setMenu] = useState(false);
+  useEffect(() => {
+    let last = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      setStuck(y > 24);
+      if (y < 120) setHidden(false);
+      else if (y - last > 6) setHidden(true);
+      else if (last - y > 6) setHidden(false);
+      else return;
+      last = y;
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) if (e.isIntersecting) setActive(`#${e.target.id}`);
+      },
+      { rootMargin: "-45% 0px -50% 0px" },
+    );
+    copy.en.nav.links.forEach((l) => {
+      const s = document.querySelector(l.href);
+      if (s) io.observe(s);
+    });
+    const top = document.querySelector("#top");
+    const clear = new IntersectionObserver(([e]) => e.isIntersecting && setActive(""), { rootMargin: "-45% 0px -50% 0px" });
+    if (top) clear.observe(top);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      io.disconnect();
+      clear.disconnect();
+    };
+  }, []);
+  useEffect(() => {
+    if (!menu) return;
+    const close = (e: KeyboardEvent) => e.key === "Escape" && setMenu(false);
+    window.addEventListener("keydown", close);
+    return () => window.removeEventListener("keydown", close);
+  }, [menu]);
+
   return (
     <div ref={root}>
+      <nav className={`nav${stuck ? " is-stuck" : ""}${hidden && !menu ? " is-hidden" : ""}${menu ? " is-open" : ""}`} aria-label="Main">
+        <a className="nav__mark" href="#top" onClick={() => setMenu(false)}>
+          {lang === "en" ? "Arun Bharti" : "अरुण भारती"}
+          <span className="nav__role">{t.nav.role}</span>
+        </a>
+        <ul className="nav__links">
+          {t.nav.links.map((l) => (
+            <li key={l.href}>
+              <a href={l.href} aria-current={active === l.href ? "location" : undefined}>
+                {l.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+        <div className="nav__end">
+          <button
+            className="lang"
+            type="button"
+            lang={lang === "en" ? "hi" : "en"}
+            aria-label={t.nav.toggleLabel}
+            onClick={() => setLang(lang === "en" ? "hi" : "en")}
+          >
+            {t.nav.toggle}
+          </button>
+          <a className="button nav__cta" href="#contact">
+            {t.nav.cta}
+          </a>
+          <button className="nav__menu" type="button" aria-expanded={menu} aria-controls="menu" onClick={() => setMenu(!menu)}>
+            {menu ? t.nav.close : t.nav.menu}
+          </button>
+        </div>
+      </nav>
+      <div className="menu" id="menu" hidden={!menu} data-lenis-prevent>
+        <ul>
+          {t.nav.links.map((l, i) => (
+            <li key={l.href} style={{ "--i": i } as React.CSSProperties}>
+              <a href={l.href} onClick={() => setMenu(false)} aria-current={active === l.href ? "location" : undefined}>
+                <span>0{i + 1}</span>
+                {l.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+        <a className="button menu__cta" href="#contact" onClick={() => setMenu(false)}>
+          {t.nav.cta} <span className="arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
       <main>
       <div className="opening">
       <header className="hero" id="top">
-        <nav className="nav" aria-label="Main">
-          <a className="nav__mark" href="#top">
-            {lang === "en" ? "Arun Bharti" : "अरुण भारती"}
-          </a>
-          <div className="nav__end">
-            <ul className="nav__links">
-              {t.nav.links.map((l) => (
-                <li key={l.href}>
-                  <a className="link" href={l.href}>
-                    {l.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-            <button
-              className="lang"
-              type="button"
-              lang={lang === "en" ? "hi" : "en"}
-              aria-label={t.nav.toggleLabel}
-              onClick={() => setLang(lang === "en" ? "hi" : "en")}
-            >
-              {t.nav.toggle}
-            </button>
-          </div>
-        </nav>
-
         <div className="hero__stage">
           <h1 className="hero__name display">
             <span className="word" data-word="first">
@@ -130,10 +196,10 @@ export default function Site() {
             <ul className="record__rows">
               {t.record.rows.map((r, i) => (
                 <li className="record__row" key={i} data-reveal style={{ "--d": `${i * 70}ms` } as React.CSSProperties}>
-                  <span className="record__whole">
+                  <span className="record__num">
                     <Count value={r.whole} />
+                    <span className="record__part">{r.part}</span>
                   </span>
-                  <span className="record__part">{r.part}</span>
                   <span className="record__cap">{r.caption}</span>
                 </li>
               ))}
@@ -164,22 +230,20 @@ export default function Site() {
           </div>
         </section>
 
-        <figure className="field">
-          <img
-            src="/img/paddy-field-siwan-71.webp"
-            alt={lang === "en" ? "Green paddy fields under a pale monsoon sky" : "मानसून के आसमान के नीचे हरे धान के खेत"}
-            width={1920}
-            height={1440}
-            loading="lazy"
-            data-drift
-          />
-          <figcaption>{lang === "en" ? "Paddy fields, Siwan district, Bihar" : "धान के खेत, सिवान ज़िला, बिहार"}</figcaption>
-        </figure>
-
         <Circuit t={t.circuit} lang={lang} />
 
         <section className="alliances wrap" id="alliances">
-          <Lines text={t.alliances.h} className="title alliances__h" />
+          <div className="alliances__stage">
+          <div className="alliances__head">
+            <Lines text={t.alliances.h} className="title alliances__h" />
+            <ol className="alliances__steps" aria-hidden="true">
+              {t.alliances.blocks.map((b, i) => (
+                <li key={i}>
+                  <span>0{i + 1}</span> {b.tag}
+                </li>
+              ))}
+            </ol>
+          </div>
           {t.alliances.blocks.map((b, i) => (
             <article className="block grid" key={i}>
               <figure className="block__visual">
@@ -227,30 +291,40 @@ export default function Site() {
               </div>
             </article>
           ))}
+          </div>
         </section>
 
         <section className="parl" id="parliament" data-stage={stage}>
           <div className="parl__track">
-            <div className="parl__stage">
-              <div className="parl__set">
+            <div className="parl__stage grid wrap">
+              <div className="parl__copy">
                 <h2 className="parl__h">
                   <span className="parl__first">{t.parliament.first}</span>
-                  <span className="parl__frame" style={{ display: "block" }}>
-                    <img src="/img/sansad-bhavan-delhi-bnk.webp" alt={t.parliament.alt} width={1920} height={1264} loading="lazy" />
-                  </span>
-                  <span className="parl__last">
-                    {t.parliament.last}
-                  </span>
+                  <span className="parl__last">{t.parliament.last}</span>
                 </h2>
-                <ol className="parl__caps">
-                  {t.parliament.stages.map((s, i) => (
-                    <li key={i} className={i === stage ? "is-on" : ""}>
-                      {s}
+                <ol className="parl__list">
+                  {t.parliament.items.map((it, i) => (
+                    <li key={i} className={i === stage ? "is-on" : i < stage ? "is-done" : ""}>
+                      <span className="parl__num">0{i + 1}</span>
+                      <span>
+                        <strong>{it.name}</strong>
+                        <span className="parl__note">{it.note}</span>
+                      </span>
                     </li>
                   ))}
                 </ol>
               </div>
-              <p className="parl__caption">{lang === "en" ? "Sansad Bhavan, New Delhi" : "संसद भवन, नई दिल्ली"}</p>
+              <figure className="parl__fig">
+                <span className="parl__frame">
+                  <img src="/img/sansad-bhavan-delhi-bnk.webp" alt={t.parliament.alt} width={1920} height={1264} loading="lazy" />
+                </span>
+                <figcaption>
+                  <span>{t.parliament.caption}</span>
+                  <span className="parl__count">
+                    0{stage + 1} / 0{t.parliament.items.length}
+                  </span>
+                </figcaption>
+              </figure>
             </div>
           </div>
         </section>

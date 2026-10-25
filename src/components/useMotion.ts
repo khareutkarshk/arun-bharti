@@ -44,7 +44,8 @@ export function useMotion(root: RefObject<HTMLElement | null>, lang: Lang, setSt
       { rootMargin: "0px 0px -6% 0px", threshold: 0.05 },
     );
     el.querySelectorAll(REVEAL).forEach((n) => {
-      if (n.classList.contains("is-in")) return;
+      // the alliances scene lights its own seats when Bihar comes up
+      if (n.classList.contains("is-in") || n.closest(".is-scene .seats, .is-scene .block__visual")) return;
       const host = n.classList.contains("shutter") && n.parentElement ? n.parentElement : n;
       watched.set(host, [...(watched.get(host) ?? []), n]);
       io.observe(host);
@@ -61,12 +62,13 @@ export function useMotion(root: RefObject<HTMLElement | null>, lang: Lang, setSt
     let lenis: Lenis | undefined;
     const tick = (time: number) => lenis?.raf(time * 1000);
     if (!reduced) {
-      lenis = new Lenis({ lerp: 0.12, anchors: true });
+      lenis = new Lenis({ lerp: 0.12, anchors: { offset: -64 } });
       lenis.on("scroll", ScrollTrigger.update);
       gsap.ticker.add(tick);
       gsap.ticker.lagSmoothing(0);
     }
 
+    const mm = gsap.matchMedia();
     const ctx = gsap.context(() => {
       const stages = el.querySelector<HTMLElement>(".parl__track");
       if (stages)
@@ -74,7 +76,9 @@ export function useMotion(root: RefObject<HTMLElement | null>, lang: Lang, setSt
           trigger: stages,
           start: "top top",
           end: "bottom bottom",
-          onUpdate: (s) => setStage(s.progress < 0.36 ? 0 : s.progress < 0.7 ? 1 : 2),
+          // measured after the pins above it have added their scroll
+          refreshPriority: -1,
+          onUpdate: (s) => setStage(Math.min(3, Math.floor(s.progress * 4))),
         });
 
       if (reduced) return;
@@ -138,15 +142,56 @@ export function useMotion(root: RefObject<HTMLElement | null>, lang: Lang, setSt
         .to(img, { x: () => g.centre.x, y: () => g.centre.y, scale: () => g.centre.scale, ease: "power2.inOut", duration: 0.5 }, 0)
         .to("[data-word='first']", { xPercent: -140, autoAlpha: 0, ease: "power2.in", duration: 0.35 }, 0)
         .to("[data-word='last']", { xPercent: 140, autoAlpha: 0, ease: "power2.in", duration: 0.35 }, 0)
-        .to([".hero__foot", ".nav"], { autoAlpha: 0, y: -16, ease: "none", duration: 0.1 }, 0)
+        .to(".hero__foot", { autoAlpha: 0, y: -16, ease: "none", duration: 0.1 }, 0)
         .to(img, { x: () => g.aside.x, y: () => g.aside.y, scale: () => g.aside.scale, ease: "power2.inOut", duration: 0.4 }, 0.58)
         .fromTo(".opening .statement-s", { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.01, immediateRender: true }, 0.64)
         .fromTo(lines, { y: 0, yPercent: 105 }, { y: 0, yPercent: 0, ease: "expo.out", duration: 0.3, stagger: 0.06 }, 0.68)
         .fromTo(words, { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, ease: "power3.out", duration: 0.25, stagger: 0.05 }, 0.76)
         .to({}, { duration: 0.15 });
 
+      // alliances, held: each story's panel wipes up over the last while its words cross over
+      mm.add("(min-width: 961px)", () => {
+        const scene = el.querySelector<HTMLElement>(".alliances");
+        const stage = scene?.querySelector<HTMLElement>(".alliances__stage");
+        if (!scene || !stage) return;
+        const blocks = gsap.utils.toArray<HTMLElement>(".block", scene);
+        const seats = scene.querySelector(".seats");
+        scene.classList.add("is-scene");
+        scene.dataset.step = "0";
+
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: stage,
+            start: "top top",
+            end: () => `+=${(blocks.length - 1) * 110}%`,
+            pin: true,
+            scrub: 0.6,
+            invalidateOnRefresh: true,
+            onUpdate: (s) => {
+              const n = String(Math.max(0, Math.min(blocks.length - 1, Math.floor(s.progress * tl.duration() + 0.6))));
+              if (scene.dataset.step === n) return;
+              scene.dataset.step = n;
+              seats?.classList.toggle("is-in", n !== "0");
+            },
+          },
+        });
+        blocks.slice(1).forEach((b, i) => {
+          tl.to(blocks[i].querySelector(".block__cluster"), { autoAlpha: 0, y: -40, ease: "power2.in", duration: 0.35 }, i + 0.1)
+            .fromTo(b.querySelector(".block__visual"), { clipPath: "inset(100% 0% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", ease: "power2.inOut", duration: 0.7 }, i + 0.1)
+            .fromTo(b.querySelector(".block__visual img"), { scale: 1.15 }, { scale: 1, ease: "power2.out", duration: 0.9 }, i + 0.1)
+            .fromTo(b.querySelector(".block__cluster"), { autoAlpha: 0, y: 48 }, { autoAlpha: 1, y: 0, ease: "power3.out", duration: 0.45 }, i + 0.45);
+        });
+        tl.to({}, { duration: 0.3 });
+
+        return () => {
+          scene.classList.remove("is-scene");
+          delete scene.dataset.step;
+        };
+      });
+
       // pictures drift a few percent inside their frames
       gsap.utils.toArray<HTMLElement>("[data-drift]").forEach((d) => {
+        if (d.closest(".is-scene")) return;
         gsap.fromTo(
           d,
           { yPercent: -5 },
@@ -156,6 +201,7 @@ export function useMotion(root: RefObject<HTMLElement | null>, lang: Lang, setSt
     }, el);
 
     return () => {
+      mm.revert();
       ctx.revert();
       el.querySelector(".opening")?.classList.remove("is-pinned");
       gsap.ticker.remove(tick);
